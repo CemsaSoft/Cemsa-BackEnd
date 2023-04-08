@@ -3,4 +3,5 @@ Desarrollo Back End de aplicativo de central meteorológica CeMSA, en tecnologí
 
 # Colaborators
 Claudio E. Oliveda
+Karen Y. Cruz
 Pablo F. Jornet
