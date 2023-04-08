@@ -1,0 +1,41 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Cemsa_BackEnd.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ServiciosController : ControllerBase
+    {
+        // GET: api/<ServiciosController>
+        [HttpGet]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
+        // GET api/<ServiciosController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return "value";
+        }
+
+        // POST api/<ServiciosController>
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
+
+        // PUT api/<ServiciosController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
+
+        // DELETE api/<ServiciosController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
+    }
+}
