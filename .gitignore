@@ -1,0 +1,14 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+*.vsidx
+/.vs/Cemsa-BackEnd/DesignTimeBuild/.dtbcache.v2
+/obj/Debug/net6.0/Cemsa-BackEnd.assets.cache
+/obj/Debug/net6.0/Cemsa-BackEnd.csproj.AssemblyReference.cache
+/obj/Debug/net6.0/Cemsa-BackEnd.GeneratedMSBuildEditorConfig.editorconfig
+/obj/Cemsa-BackEnd.csproj.nuget.dgspec.json
+/obj/Cemsa-BackEnd.csproj.nuget.g.props
+/obj/project.assets.json
+/obj/project.nuget.cache
+/.vs/Cemsa-BackEnd/FileContentIndex/c2013639-e76e-447d-ade7-90dbbbea2704.vsidx
