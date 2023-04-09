@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Cemsa_BackEnd.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cemsa_BackEnd.Controllers
 {
@@ -6,18 +8,28 @@ namespace Cemsa_BackEnd.Controllers
     [ApiController]
     public class ServiciosController : ControllerBase
     {
-        // GET: api/<ServiciosController>
+        // GET: api/servicio
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<TServicio> obtenerServicios()
         {
-            return new string[] { "value1", "value2" };
+            using (var db = new CemsaContext())
+            {
+                return db.TServicios.ToList();
+            }
         }
 
-        // GET api/<ServiciosController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/servicio
+        [HttpGet("{id:int}")]
+        public TServicio? obtenerServiciosPorId (int id)
         {
-            return "value";
+
+            using (var db = new CemsaContext())
+            {
+                return db.TServicios.Include(a => a.SerId).FirstOrDefault(a => a.SerId == id);
+                 
+            }
+            //var servicio =  CemsaContext.TServicios.AnyAsync<TServicio>(x => x.SerDescripcion == nombre);
+
         }
 
         // POST api/<ServiciosController>
