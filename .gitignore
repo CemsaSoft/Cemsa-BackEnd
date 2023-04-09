@@ -14,3 +14,6 @@
 /.vs/Cemsa-BackEnd/FileContentIndex/c2013639-e76e-447d-ade7-90dbbbea2704.vsidx
 /.vs/Cemsa-BackEnd/v17/.futdcache.v2
 /.vs/Cemsa-BackEnd/v17/.suo
+*.dll
+/bin/Debug/net6.0/Cemsa-BackEnd.dll
+/bin/Debug/net6.0/Swashbuckle.AspNetCore.Swagger.dll
