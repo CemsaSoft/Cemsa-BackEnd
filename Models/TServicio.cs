@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Cemsa_BackEnd.Validations;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cemsa_BackEnd.Models
 {
@@ -10,8 +12,24 @@ namespace Cemsa_BackEnd.Models
             TServiciosxcentrals = new HashSet<TServiciosxcentral>();
         }
 
+        /// <summary>
+        /// ID del Servicio
+        /// </summary>
         public int SerId { get; set; }
+
+        /// <summary>
+        /// Descripción del servicio
+        /// </summary>
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [StringLength(maximumLength: 20, MinimumLength = 3, ErrorMessage = "El campo {0} no debe tener mas de {1} y menos de {2} caracteres")]
+        [FirstCapitalUpper]
         public string SerDescripcion { get; set; } = null!;
+        /// <summary>
+        /// Nombre de la Unidad de medida correspondiente al servicio
+        /// </summary>
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [StringLength(maximumLength: 20, MinimumLength = 3, ErrorMessage = "El campo {0} no debe tener mas de {1} y menos de {2} caracteres")]
+        [FirstCapitalUpper]
         public string SerUnidad { get; set; } = null!;
 
         public virtual ICollection<TServiciosxcentral> TServiciosxcentrals { get; set; }
