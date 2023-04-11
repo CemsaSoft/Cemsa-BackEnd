@@ -4,11 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cemsa_BackEnd.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/servicios")]
     [ApiController]
     public class ServiciosController : ControllerBase
     {
-        /// Listar Servicios de la Base de datos
+        //GET: api/servicios
+        /// <summary>
+        /// Recupera el listado de Servicios de la Base de datos
+        /// </summary>
+        /// <returns>Lista de servicios</returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet]
         public List<TServicio> obtenerServicios()
         {
@@ -25,7 +30,13 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
-        /// Listar Servicios de la Base de datos por Id
+        //GET: api/servicios/id
+        /// <summary>
+        /// Recupera el servicio con el ID pasado por parámetro.
+        /// </summary>
+        /// <param name="id">ID del servicio</param>
+        /// <returns>Servicio</returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet("{id:int}")]
         public TServicio? obtenerServiciosPorId(int id)
         {
@@ -41,7 +52,13 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
-        /// Listar Servicios de la Base de datos por Descripcion 
+        //GET: api/servicios/busquedaDescripcion
+        /// <summary>
+        /// Recupera el listado de Servicios de la Base de datos con la descripción solicitada. 
+        /// </summary>
+        /// <param name="busquedaDescripcion">Descripción del servicio</param>
+        /// <returns>Servicio</returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet("{busquedaDescripcion}")]
         public ActionResult<List<TServicio>> obtenerServiciosPorDescr(string busquedaDescripcion)
         {
@@ -77,9 +94,16 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
-        /// Agregar un servicio a la Base de Datos x datos Descripcion y Unidad x parametros
+        //POST
+        /// <summary>
+        /// Registra un servicio a la Base de Datos
+        /// </summary>
+        /// <param name="descripcion">Descripción del Servicio</param>
+        /// <param name="unidad">Unidad de Medida del Servicio</param>
+        /// <returns>Servicio registrado</returns>
+        /// <exception cref="Exception"></exception>
         [HttpPost("{descripcion}/{unidad}")]
-        public ActionResult Post(string descripcion, string unidad)
+        public ActionResult registrarServicio(string descripcion, string unidad)
         {
             try
             {
