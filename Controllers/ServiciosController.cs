@@ -125,7 +125,7 @@ namespace Cemsa_BackEnd.Controllers
 
         /// Agregar un servicio a la Base de Datos x datos Descripcion y Unidad x parametros
         [HttpPost("{id:int}")]
-        public ActionResult modificarSeervicio(int id, TServicio servicio)
+        public ActionResult modificarServicio(int id, TServicio servicio)
         {
             try
             {
@@ -143,6 +143,30 @@ namespace Cemsa_BackEnd.Controllers
             catch (Exception ex)
             {
                 throw new Exception("Error al intentar actualizar los datos de un Servicio", ex);
+            }
+        }
+
+        /// Eliminar un servicio a la Base de Datos
+        [HttpDelete("{id}")]
+        public ActionResult EliminarServicio(int id)
+        {
+            try
+            {                
+                using (var db = new CemsaContext())
+                {                    
+                    var servicioEliminar = db.TServicios.Find(id);
+                    if (servicioEliminar == null)
+                    {
+                        return BadRequest("El Id del Servicio no esta registrado en el sistema");
+                    }
+                    db.TServicios.Remove(servicioEliminar);
+                    db.SaveChanges();
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar eleminar un Servicio", ex);
             }
         }
 
