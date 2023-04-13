@@ -40,7 +40,8 @@ namespace Cemsa_BackEnd.Controllers
         [HttpGet("{id:int}")]
         public TServicio? obtenerServiciosPorId(int id)
         {
-            try { 
+            try
+            {
                 using (var db = new CemsaContext())
                 {
                     return db.TServicios.FirstOrDefault(a => a.SerId == id);
@@ -151,9 +152,9 @@ namespace Cemsa_BackEnd.Controllers
         public ActionResult EliminarServicio(int id)
         {
             try
-            {                
+            {
                 using (var db = new CemsaContext())
-                {                    
+                {
                     var servicioEliminar = db.TServicios.Find(id);
                     if (servicioEliminar == null)
                     {
