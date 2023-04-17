@@ -160,6 +160,13 @@ namespace Cemsa_BackEnd.Controllers
                     {
                         return BadRequest("El Id del Servicio no esta registrado en el sistema");
                     }
+
+                    var serviciosXCentral = db.TServiciosxcentrals.Where(s => s.SxcNroServicio == id).ToList();
+                    if (serviciosXCentral.Any())
+                    {
+                        return BadRequest("No se puede eliminar el Servicio ya que está vinculado a una o varias Centrales");
+                    }
+
                     db.TServicios.Remove(servicioEliminar);
                     db.SaveChanges();
                     return Ok();
