@@ -28,7 +28,7 @@ namespace Cemsa_BackEnd.Models
         /// Nombre de la Unidad de medida correspondiente al servicio
         /// </summary>
         [Required(ErrorMessage = "El campo {0} es requerido")]
-        [StringLength(maximumLength: 20, MinimumLength = 3, ErrorMessage = "El campo {0} no debe tener mas de {1} y menos de {2} caracteres")]
+        [StringLength(maximumLength: 20, MinimumLength = 2, ErrorMessage = "El campo {0} no debe tener mas de {1} y menos de {2} caracteres")]
         [FirstCapitalUpper]
         public string SerUnidad { get; set; } = null!;
 

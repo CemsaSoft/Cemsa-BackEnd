@@ -15,13 +15,13 @@ namespace Cemsa_BackEnd.Controllers
         /// <returns>Lista de servicios</returns>
         /// <exception cref="Exception"></exception>
         [HttpGet]
-        public List<TServicio> obtenerServicios()
+        public async Task<List<TServicio>> obtenerServicios()
         {
             try
             {
                 using (var db = new CemsaContext())
                 {
-                    return db.TServicios.ToList();
+                    return await db.TServicios.ToListAsync();
                 }
             }
             catch (Exception ex)
@@ -38,13 +38,13 @@ namespace Cemsa_BackEnd.Controllers
         /// <returns>Servicio</returns>
         /// <exception cref="Exception"></exception>
         [HttpGet("{id:int}")]
-        public TServicio? obtenerServiciosPorId(int id)
+        public async Task<TServicio?> obtenerServiciosPorId(int id)
         {
             try
             {
                 using (var db = new CemsaContext())
                 {
-                    return db.TServicios.FirstOrDefault(a => a.SerId == id);
+                    return await db.TServicios.FirstOrDefaultAsync(a => a.SerId == id);
                 }
             }
             catch (Exception ex)
@@ -61,13 +61,13 @@ namespace Cemsa_BackEnd.Controllers
         /// <returns>Servicio</returns>
         /// <exception cref="Exception"></exception>
         [HttpGet("{busquedaDescripcion}")]
-        public ActionResult<List<TServicio>> obtenerServiciosPorDescr(string busquedaDescripcion)
+        public async Task<ActionResult<List<TServicio>>> obtenerServiciosPorDescr(string busquedaDescripcion)
         {
             try
             {
                 using (var db = new CemsaContext())
                 {
-                    return db.TServicios.Where(x => x.SerDescripcion.Contains(busquedaDescripcion)).ToList();
+                    return await db.TServicios.Where(x => x.SerDescripcion.Contains(busquedaDescripcion)).ToListAsync();
                 }
             }
             catch (Exception ex)
@@ -76,16 +76,21 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
-        /// Agregar un servicio a la Base de Datos x datos Body
+        //POST: api/servicios/registrarServicio
+        /// Registra un servicio a la Base de Datos x datos Body
+        /// </summary>
+        /// <param name="servicio">Servicio a registrar</param>
+        /// <returns>Servicio registrado</returns>
+        /// <exception cref="Exception"></exception>
         [HttpPost]
-        public ActionResult Post([FromBody] TServicio servicio)
+        public async Task<ActionResult> Post([FromBody] TServicio servicio)
         {
             try
             {
                 using (var db = new CemsaContext())
                 {
                     db.TServicios.Add(servicio);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     return Ok();
                 }
             }
@@ -95,7 +100,7 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
-        //POST
+        //POST: api/servicios/registrarServicio
         /// <summary>
         /// Registra un servicio a la Base de Datos
         /// </summary>
@@ -104,7 +109,7 @@ namespace Cemsa_BackEnd.Controllers
         /// <returns>Servicio registrado</returns>
         /// <exception cref="Exception"></exception>
         [HttpPost("{descripcion}/{unidad}")]
-        public ActionResult registrarServicio(string descripcion, string unidad)
+        public async Task<ActionResult> registrarServicio(string descripcion, string unidad)
         {
             try
             {
@@ -114,7 +119,7 @@ namespace Cemsa_BackEnd.Controllers
                     servicio.SerDescripcion = descripcion;
                     servicio.SerUnidad = unidad;
                     db.TServicios.Add(servicio);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     return Ok();
                 }
             }
@@ -124,9 +129,15 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
+        //POST: api/servicios/modificarServicio
         /// Agregar un servicio a la Base de Datos x datos Descripcion y Unidad x parametros
+        /// </summary>
+        /// <param name="id">id del Servicio a modificar</param>
+        /// <param name="servicio">Servicio a modificar</param>
+        /// <returns>Se modifico el servicio</returns>
+        /// <exception cref="Exception"></exception>
         [HttpPost("{id:int}")]
-        public ActionResult modificarServicio(int id, TServicio servicio)
+        public async Task<ActionResult> modificarServicio(int id, TServicio servicio)
         {
             try
             {
@@ -137,7 +148,7 @@ namespace Cemsa_BackEnd.Controllers
                         return BadRequest("El Id del Servicio no esta registrado en el sistema");
                     }
                     db.TServicios.Update(servicio);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     return Ok();
                 }
             }
@@ -147,9 +158,15 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
+        //DELETE: api/servicios/id
+        /// <summary>
         /// Eliminar un servicio a la Base de Datos
+        /// </summary>
+        /// <param name="id">id del Servicio a eliminar</param>
+        /// <returns>Se elimino el servicio</returns>
+        /// <exception cref="Exception"></exception>
         [HttpDelete("{id}")]
-        public ActionResult EliminarServicio(int id)
+        public async Task<ActionResult> EliminarServicio(int id)
         {
             try
             {
@@ -160,15 +177,13 @@ namespace Cemsa_BackEnd.Controllers
                     {
                         return BadRequest("El Id del Servicio no esta registrado en el sistema");
                     }
-
                     var serviciosXCentral = db.TServiciosxcentrals.Where(s => s.SxcNroServicio == id).ToList();
                     if (serviciosXCentral.Any())
                     {
                         return BadRequest("No se puede eliminar el Servicio ya que está vinculado a una o varias Centrales");
                     }
-
                     db.TServicios.Remove(servicioEliminar);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     return Ok();
                 }
             }
@@ -177,23 +192,5 @@ namespace Cemsa_BackEnd.Controllers
                 throw new Exception("Error al intentar eleminar un Servicio", ex);
             }
         }
-
-        //// DELETE api/<ServiciosController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
-
-        // POST api/<ServiciosController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        // PUT api/<ServiciosController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
     }
 }
