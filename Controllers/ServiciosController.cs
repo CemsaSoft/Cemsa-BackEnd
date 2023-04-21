@@ -166,7 +166,7 @@ namespace Cemsa_BackEnd.Controllers
         /// <returns>Se elimino el servicio</returns>
         /// <exception cref="Exception"></exception>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> EliminarServicio(int id)
+        public async Task<ActionResult> eliminarServicio(int id)
         {
             try
             {
