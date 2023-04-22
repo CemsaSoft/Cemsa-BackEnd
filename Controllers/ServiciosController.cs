@@ -91,7 +91,7 @@ namespace Cemsa_BackEnd.Controllers
                 {
                     db.TServicios.Add(servicio);
                     await db.SaveChangesAsync();
-                    return Ok();
+                    return Ok(servicio);
                 }
             }
             catch (Exception ex)
