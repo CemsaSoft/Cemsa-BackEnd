@@ -24,19 +24,26 @@ namespace Cemsa_BackEnd.Controllers
             try
             {
                 using (var db = new CemsaContext())
-                { 
-                    var query = await( from tc in db.TCentrals
-                               join tec in db.TEstadoCentrals on tc.CenIdEstadoCentral equals tec.EstId
-                               join tc2 in db.TClientes on new { tipoDoc = tc.CenTipoDoc, nroDoc = tc.CenNroDoc } equals new { tipoDoc = tc2.CliTipoDoc, nroDoc = tc2.CliNroDoc }
-                               join tu in db.TUsuarios on tc2.CliIdUsuario equals tu.UsrId
-                               select new
-                               {
-                                   tc.CenNro,
-                                   tc2.CliApeNomDen,
-                                   tu.Usuario,
-                                   tec.EstDescripcion,
-                                   tec.EstId
-                               }).ToListAsync();
+                {
+                    var query = await (from tc in db.TCentrals
+                                       join tec in db.TEstadoCentrals on tc.CenIdEstadoCentral equals tec.EstId
+                                       join tc2 in db.TClientes
+                                       on new { tipoDoc = tc.CenTipoDoc, nroDoc = tc.CenNroDoc } equals new { tipoDoc = tc2.CliTipoDoc, nroDoc = tc2.CliNroDoc }
+                                       join tu in db.TUsuarios
+                                       on tc2.CliIdUsuario equals tu.UsrId                                       
+                                       select new
+                                       {
+                                           tc.CenNro,
+                                           tc.CenImei,
+                                           tc.CenCoorX,
+                                           tc.CenCoorY,
+                                           tc.CenFechaAlta,
+                                           tc.CenFechaBaja,
+                                           tc.CenIdEstadoCentral,
+                                           tc2.CliApeNomDen,
+                                           tu.Usuario,
+                                           tec.EstDescripcion,
+                                       }).ToListAsync();
                     return Ok(query);
                 }                  
             }
