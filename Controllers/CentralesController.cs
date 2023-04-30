@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Cemsa_BackEnd.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using System.Data;
 
 namespace Cemsa_BackEnd.Controllers
 {
@@ -12,6 +15,32 @@ namespace Cemsa_BackEnd.Controllers
     [ApiController]
     public class CentralesController : ControllerBase
     {
+        //POST: api/central/registrarCentral
+        /// <summary>
+        /// Regristrar un nueva Central
+        /// </summary>
+        /// <param name="central"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("registrarCentral/")]
+        public async Task<ActionResult> Post(TCentral central)
+        {
+            try
+            {
+                using (var db = new CemsaContext())
+                {
+                    db.TCentrals.Add(central);
+                    await db.SaveChangesAsync();
+                    return Ok(central);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar insertar los datos de la Central", ex);
+            }
+        }
+
+
         //GET: api/centrales/obtenerCentrales
         /// <summary>
         /// Recupera el listado de Centrales de la Base de datos
@@ -106,6 +135,70 @@ namespace Cemsa_BackEnd.Controllers
             catch (Exception ex)
             {
                 throw new Exception("Error al intentar obtener Lista de Estados de Central", ex);
+            }
+        }
+        //GET: api/centrales/obtenerServicioXCentral
+        /// <summary>
+        /// Recupera el listado de Servicio que tiene una Central de la Base de datos
+        /// </summary>
+        /// <returns>Lista de Servicio x Central</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("serviciosXCentral/{cenNum}")]
+        public async Task<ActionResult<List<TServicio>>> obtenerServicioXCentral(int cenNum)
+        {
+            try
+            {
+                using (var db = new CemsaContext())
+                {
+                    var query = await (from ts2 in db.TServicios
+                                        join ts in db.TServiciosxcentrals on ts2.SerId equals ts.SxcNroServicio
+                                        join tc in db.TCentrals on ts.SxcNroCentral equals tc.CenNro
+                                        where tc.CenNro == cenNum
+                                        select new
+                                        {
+                                            ts2.SerId,
+                                            ts2.SerDescripcion,
+                                        }).ToListAsync();
+                    return Ok(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar obtener Lista de Servicio de una Central", ex);
+            }
+        }
+
+        //POST: api/servicios/registrarServicio
+        /// Actualizar datos de una Centra a la Base de Datos
+        /// </summary>
+        /// <param name="TCentral>Central Actualizar</param>
+        /// <returns>Central Actualizada</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("actualizarDatosCentral/{cenNum}/{cenImei}/{cenCoorX}/{cenCoorY}")]
+        public async Task<ActionResult> actualizarDatosCentral(int cenNum, string cenImei, string cenCoorX, string cenCoorY)
+        {
+            try
+            {
+                using (var db = new CemsaContext())
+                {
+                    var central = await db.TCentrals.FirstOrDefaultAsync(c => c.CenNro == cenNum);
+                    if (central != null)
+                    {
+                        central.CenImei = cenImei;
+                        central.CenCoorX = cenCoorX;
+                        central.CenCoorY = cenCoorY;                                                
+                        await db.SaveChangesAsync();
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar actualizar datos de una Central", ex);
             }
         }
     }

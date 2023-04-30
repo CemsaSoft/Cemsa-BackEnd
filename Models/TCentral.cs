@@ -21,9 +21,9 @@ namespace Cemsa_BackEnd.Models
         public int CenTipoDoc { get; set; }
         public string CenNroDoc { get; set; } = null!;
 
-        public virtual TCliente Cen { get; set; } = null!;
-        public virtual TEstadoCentral CenIdEstadoCentralNavigation { get; set; } = null!;
-        public virtual ICollection<TFumigacion> TFumigacions { get; set; }
-        public virtual ICollection<TServiciosxcentral> TServiciosxcentrals { get; set; }
+        public virtual TCliente? Cen { get; set; } //= null!;
+        public virtual TEstadoCentral? CenIdEstadoCentralNavigation { get; set; } //= null!;
+        public virtual ICollection<TFumigacion>? TFumigacions { get; set; }
+        public virtual ICollection<TServiciosxcentral>? TServiciosxcentrals { get; set; }
     }
 }
