@@ -15,6 +15,39 @@ namespace Cemsa_BackEnd.Controllers
     [ApiController]
     public class CentralesController : ControllerBase
     {
+
+        //GET: api/centrales/obtenerClientes
+        /// <summary>
+        /// Recupera el listado de Clientes de la Base de datos
+        /// </summary>
+        /// <returns>Lista de Clientes</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("listaClientes")]
+        public async Task<ActionResult<List<TCliente>>> obtenerClientes()
+        {
+            try
+            {
+                using (var db = new CemsaContext())
+                {
+                    var query = await (from c in db.TClientes
+                                       join u in db.TUsuarios on c.CliIdUsuario equals u.UsrId
+                                       select new
+                                       {
+                                           c.CliTipoDoc,
+                                           c.CliNroDoc,
+                                           c.CliApeNomDen,
+                                           u.Usuario
+                                       }).ToListAsync();
+                    return Ok(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar obtener Lista de Clientes", ex);
+            }
+        }
+
+
         //POST: api/central/registrarCentral
         /// <summary>
         /// Regristrar un nueva Central
@@ -40,6 +73,36 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
+
+        //POST: api/central/registrarServiciosCentral
+        /// <summary>
+        /// Regristrar un Servicios a una Central
+        /// </summary>
+        /// <param name="TServiciosxcentral"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("registrarServiciosCentral/")]
+        public async Task<ActionResult> Post([FromBody] List<TServiciosxcentral> servicios)
+        {
+            try
+            {
+                using (var db = new CemsaContext())
+                {
+                    foreach (var servicio in servicios)
+                    {
+                        //servicio.SxcNroCentral = central.CenNro;
+                        db.TServiciosxcentrals.Add(servicio);
+                    }
+
+                    await db.SaveChangesAsync();
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar insertar los servicios de la Central", ex);
+            }
+        }
 
         //GET: api/centrales/obtenerCentrales
         /// <summary>
@@ -137,6 +200,7 @@ namespace Cemsa_BackEnd.Controllers
                 throw new Exception("Error al intentar obtener Lista de Estados de Central", ex);
             }
         }
+
         //GET: api/centrales/obtenerServicioXCentral
         /// <summary>
         /// Recupera el listado de Servicio que tiene una Central de la Base de datos
@@ -153,12 +217,45 @@ namespace Cemsa_BackEnd.Controllers
                     var query = await (from ts2 in db.TServicios
                                         join ts in db.TServiciosxcentrals on ts2.SerId equals ts.SxcNroServicio
                                         join tc in db.TCentrals on ts.SxcNroCentral equals tc.CenNro
-                                        where tc.CenNro == cenNum
+                                        where tc.CenNro == cenNum && ts.SxcEstado == 1
                                         select new
                                         {
                                             ts2.SerId,
                                             ts2.SerDescripcion,
                                         }).ToListAsync();
+                    return Ok(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar obtener Lista de Servicio de una Central", ex);
+            }
+        }
+
+        //GET: api/centrales/serviciosXCentralCompleto
+        /// <summary>
+        /// Recupera el listado de Servicio que tiene una Central de la Base de datos con todos sus campos
+        /// </summary>
+        /// <returns>Lista de Servicio x Central</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("serviciosXCentralCompleto/{cenNum}")]
+        public async Task<ActionResult<List<TServiciosxcentral>>> serviciosXCentralCompleto(int cenNum)
+        {
+            try
+            {
+                using (var db = new CemsaContext())
+                {
+                    var query = await (from ts in db.TServiciosxcentrals                            
+                                       
+                                       where ts.SxcNroCentral == cenNum
+                                       select new
+                                       {
+                                           ts.SxcNroCentral,
+                                           ts.SxcNroServicio,
+                                           ts.SxcEstado,
+                                           ts.SxcFechaAlta,
+                                           ts.SxcFechaBaja
+                                       }).ToListAsync();
                     return Ok(query);
                 }
             }
