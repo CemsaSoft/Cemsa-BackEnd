@@ -104,6 +104,48 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
+        //POST: api/central/registrarServiciosCentral
+        /// <summary>
+        /// Regristrar un Servicios a una Central
+        /// </summary>
+        /// <param name="TServiciosxcentral"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("actualizarServiciosCentral/")]
+        public async Task<ActionResult> actualizarServiciosCentral([FromBody] List<TServiciosxcentral> servicios)
+        {
+            try
+            {
+                using (var db = new CemsaContext())
+                {
+                    foreach (var servicio in servicios)
+                    {
+                        var servicioExistente = await db.TServiciosxcentrals
+                            .FirstOrDefaultAsync(s => s.SxcNroServicio == servicio.SxcNroServicio
+                                                     && s.SxcNroCentral == servicio.SxcNroCentral);
+
+                        if (servicioExistente != null)
+                        {
+                            servicioExistente.SxcEstado = servicio.SxcEstado;
+                            servicioExistente.SxcFechaBaja = servicioExistente.SxcEstado == 2 ? DateTime.Now : null;
+                            db.TServiciosxcentrals.Update(servicioExistente);
+                        }
+                        else
+                        {
+                            db.TServiciosxcentrals.Add(servicio); 
+                        }
+                    }
+
+                    await db.SaveChangesAsync();
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar actualizar los servicios de la Central", ex);
+            }
+        }
+
         //GET: api/centrales/obtenerCentrales
         /// <summary>
         /// Recupera el listado de Centrales de la Base de datos

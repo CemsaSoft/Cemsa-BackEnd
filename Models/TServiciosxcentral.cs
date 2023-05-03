@@ -14,7 +14,7 @@ namespace Cemsa_BackEnd.Models
         public int SxcNroServicio { get; set; }
         public int SxcEstado { get; set; }
         public DateTime SxcFechaAlta { get; set; }
-        public DateOnly? SxcFechaBaja { get; set; }
+        public DateTime? SxcFechaBaja { get; set; }
 
         public virtual TEstadoserviciosxCentral? SxcEstadoNavigation { get; set; } // = null!;
         public virtual TCentral? SxcNroCentralNavigation { get; set; } // = null!;
