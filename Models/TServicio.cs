@@ -24,12 +24,12 @@ namespace Cemsa_BackEnd.Models
         [StringLength(maximumLength: 20, MinimumLength = 3, ErrorMessage = "El campo {0} no debe tener mas de {1} y menos de {2} caracteres")]
         [FirstCapitalUpper]
         public string SerDescripcion { get; set; } = null!;
+       
         /// <summary>
         /// Nombre de la Unidad de medida correspondiente al servicio
         /// </summary>
         [Required(ErrorMessage = "El campo {0} es requerido")]
-        [StringLength(maximumLength: 20, MinimumLength = 1, ErrorMessage = "El campo {0} no debe tener mas de {1} y menos de {2} caracteres")]
-        [FirstCapitalUpper]
+        [StringLength(maximumLength: 20, MinimumLength = 1, ErrorMessage = "El campo {0} no debe tener mas de {1} y menos de {2} caracteres")]        
         public string SerUnidad { get; set; } = null!;
 
         public virtual ICollection<TServiciosxcentral> TServiciosxcentrals { get; set; }
