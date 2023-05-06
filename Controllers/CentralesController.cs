@@ -31,12 +31,15 @@ namespace Cemsa_BackEnd.Controllers
                 {
                     var query = await (from c in db.TClientes
                                        join u in db.TUsuarios on c.CliIdUsuario equals u.UsrId
+                                       join ttd in db.TTipoDocumentos on c.CliTipoDoc equals ttd.TdId
+
                                        select new
                                        {
                                            c.CliTipoDoc,
                                            c.CliNroDoc,
                                            c.CliApeNomDen,
-                                           u.Usuario
+                                           u.Usuario,
+                                           ttd.TdDescripcion
                                        }).ToListAsync();
                     return Ok(query);
                 }
