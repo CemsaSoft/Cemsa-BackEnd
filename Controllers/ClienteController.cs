@@ -8,11 +8,13 @@ using Cemsa_BackEnd.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cemsa_BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ClienteController : ControllerBase
     {
         //GET: api/cliente/obtenerClientes
@@ -26,7 +28,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     var query = await (from tc in db.TClientes
                                        join tu in db.TUsuarios on tc.CliIdUsuario equals tu.UsrId
