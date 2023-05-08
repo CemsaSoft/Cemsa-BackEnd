@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Cemsa_BackEnd.Models
 {
@@ -20,8 +19,8 @@ namespace Cemsa_BackEnd.Models
         public string? CliEmail { get; set; }
         public string? CliTelefono { get; set; }
 
-        public virtual TUsuario CliIdUsuarioNavigation { get; set; } = null!;
-        public virtual TTipoDocumento CliTipoDocNavigation { get; set; } = null!;
+        public virtual TUsuario? CliIdUsuarioNavigation { get; set; } //= null!;
+        public virtual TTipoDocumento? CliTipoDocNavigation { get; set; } // = null!;
         public virtual ICollection<TCentral> TCentrals { get; set; }
     }
 }

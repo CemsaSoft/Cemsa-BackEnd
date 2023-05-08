@@ -44,7 +44,7 @@ namespace Cemsa_BackEnd.Controllers
                                            tc.CliEmail,
                                            tc.CliTelefono,
                                            tu.Usuario,
-                                           ttd.TdDescripcion                            
+                                           ttd.TdDescripcion
                                        }).ToListAsync();
                     return Ok(query);
                 }
@@ -52,6 +52,137 @@ namespace Cemsa_BackEnd.Controllers
             catch (Exception ex)
             {
                 throw new Exception("Error al intentar obtener Lista de Clientes", ex);
+            }
+        }
+
+        //GET: api/Cliente/obtenerTipoDoc
+        /// <summary>
+        /// Recupera el listado de Tipo de Docuemntos de la Base de datos
+        /// </summary>
+        /// <returns>Lista de Tipo de Documentosl</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("listaTipoDoc")]
+        public async Task<List<TTipoDocumento>> obtenerTipoDoc()
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    return await db.TTipoDocumentos.ToListAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar obtener Lista de Tipo de Documentos", ex);
+            }
+        }
+
+        //POST: api/Cliente/modificarEstado 
+        /// <summary>
+        /// Modifica estado de un Cliente
+        /// Si la accion 0, fechaBaja = NULL - Si la accion 0, fechaBaja = NOW()
+        /// </summary>
+        /// <returns>Modifica Estado de un Cliente</returns>
+        /// <exception cref="Exception"></exception>        
+        [HttpPost("modificarEstado")]
+        public async Task<ActionResult> modificarEstado([FromBody] ModificarEstadoRequest request)
+        {
+            try
+            {
+                int accion = request.accion;
+                int tipoDoc = request.tipoDoc;
+                string nroDoc = request.nroDoc;
+                using (var db = new ApplicationDbContext())
+                {
+                    var cliente = await db.TClientes.FirstOrDefaultAsync(c => c.CliTipoDoc == tipoDoc && c.CliNroDoc == nroDoc);
+                    if (cliente != null)
+                    {
+                        cliente.FechaBaja = accion == 1 ? DateTime.Now : null;
+                        await db.SaveChangesAsync();
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar actualizar los datos del Cliente", ex);
+            }
+        }
+
+        public class ModificarEstadoRequest
+        {
+            public int accion { get; set; }
+            public int tipoDoc { get; set; }
+            public string nroDoc { get; set; }
+        }
+
+        //POST: api/Cliente/blanquearPassword 
+        /// <summary>
+        /// Realiza un Blanqueo del Password de un Usuario
+        /// </summary>
+        /// <returns>Realizar Blanqueo de Password</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("blanquearPassword/{usrID}")]
+        public async Task<ActionResult> blanquearPassword(int usrID)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var usuario = await db.TUsuarios.FirstOrDefaultAsync(u => u.UsrId == usrID);
+                    if (usuario != null)
+                    {
+                        usuario.Password = "123456";
+                        await db.SaveChangesAsync();
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar blanquear Password de un Usuario", ex);
+            }
+        }
+
+        //POST: api/Cliente/actualizarCliente 
+        /// <summary>
+        /// Realiza la actualización de un Cliente en la Base de Datos
+        /// </summary>
+        /// <returns>Realizar Actlizacion de un Cliente</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("actualizarCliente/")]
+        public async Task<ActionResult> actualizarCliente(TCliente cliente)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var c = await db.TClientes.FirstOrDefaultAsync(u => u.CliTipoDoc == cliente.CliTipoDoc && u.CliNroDoc == cliente.CliNroDoc);
+                    if (c != null)
+                    {
+                        c.CliApeNomDen = cliente.CliApeNomDen;
+                        c.CliEmail = cliente.CliEmail;
+                        c.CliTelefono = cliente.CliTelefono;
+                        await db.SaveChangesAsync();
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar actulizar un Cliente", ex);
             }
         }
 
