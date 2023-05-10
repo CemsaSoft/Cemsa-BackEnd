@@ -158,8 +158,8 @@ namespace Cemsa_BackEnd.Controllers
         /// </summary>
         /// <returns>Realizar Actlizacion de un Cliente</returns>
         /// <exception cref="Exception"></exception>
-        [HttpPost("actualizarCliente/")]
-        public async Task<ActionResult> actualizarCliente(TCliente cliente)
+        [HttpPost("actualizarCliente/{usuario}")]
+        public async Task<ActionResult> actualizarCliente(TCliente cliente, string usuario)
         {
             try
             {
@@ -168,10 +168,17 @@ namespace Cemsa_BackEnd.Controllers
                     var c = await db.TClientes.FirstOrDefaultAsync(u => u.CliTipoDoc == cliente.CliTipoDoc && u.CliNroDoc == cliente.CliNroDoc);
                     if (c != null)
                     {
-                        c.CliApeNomDen = cliente.CliApeNomDen;
+                        c.CliApeNomDen = cliente.CliApeNomDen;  
                         c.CliEmail = cliente.CliEmail;
                         c.CliTelefono = cliente.CliTelefono;
-                        await db.SaveChangesAsync();
+
+                        // Actualizar el nombre de usuario en la tabla TUsuario
+                        var u = await db.TUsuarios.FirstOrDefaultAsync(u => u.UsrId == c.CliIdUsuario);
+                        if (u != null)
+                        {
+                            u.Usuario = usuario;
+                        }
+                        await db.SaveChangesAsync();               
                         return Ok();
                     }
                     else
@@ -182,40 +189,98 @@ namespace Cemsa_BackEnd.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al intentar actulizar un Cliente", ex);
+                throw new Exception("Error al intentar actualizar un Cliente", ex);
             }
         }
 
-        //// GET: api/<ClienteController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        //POST: api/Cliente/registarCliente 
+        /// <summary>
+        /// Realiza el registro de un Cliente e Usuario en la Base de Datos
+        /// </summary>
+        /// <returns>Realizar Registro de un Cliente e Usuario</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("registarCliente/{usuario}")]
+        public async Task<ActionResult> registarCliente(TCliente cliente, string usuario)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var u = await db.TUsuarios.FirstOrDefaultAsync(u => u.Usuario == usuario);
+                    if (u != null)
+                    {
+                        return BadRequest("El nombre de usuario ya está en uso.");
+                    }
+                    else
+                    {
+                        var cc = await db.TClientes.FirstOrDefaultAsync(cc => cc.CliNroDoc == cliente.CliNroDoc && cc.CliTipoDoc == cliente.CliTipoDoc) ;
+                        if (cc != null)
+                        {
+                            return BadRequest("El tipo y número de documento ya está en uso.");
+                        }
+                        else
+                        {
+                            // Crea un nuevo usuario con los valores especificados
+                            TUsuario nuevoUsuario = new TUsuario
+                            {
+                                Usuario = usuario,
+                                Password = "123456"
+                            };
 
-        //// GET api/<ClienteController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+                            // Agrega el usuario a la tabla de usuarios
+                            db.TUsuarios.Add(nuevoUsuario);
+                            await db.SaveChangesAsync();
 
-        //// POST api/<ClienteController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
 
-        //// PUT api/<ClienteController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+                            // Usa el ID generado para el nuevo usuario en el registro de cliente
+                            cliente.CliIdUsuario = nuevoUsuario.UsrId;
+                            cliente.CliFechaAlta = DateTime.Now;
+                            cliente.FechaBaja = null;
 
-        //// DELETE api/<ClienteController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+                            // Agrega el cliente a la tabla de clientes
+                            db.TClientes.Add(cliente);
+                            await db.SaveChangesAsync();
+
+                            // Retorna el cliente registrado
+                            return Ok();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar Registrar un Cliente", ex);
+            }
+        }      
+
+        //POST: api/Cliente/verificarUsuarioMod 
+        /// <summary>
+        /// Realiza una consulta y ve si esta en uso el nommbre de Usuario en la Base de Datos y no sea el que quiero modificar
+        /// </summary>
+        /// <returns>Entraga si es posible usar el nombre de usuario</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("verificarUsuarioMod/{usuario}/{idUsuario}")]
+        public async Task<ActionResult> verificarUsuarioMod(string usuario, int idUsuario)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var u = await db.TUsuarios.FirstOrDefaultAsync(u => u.Usuario == usuario && u.UsrId != idUsuario);
+                    if (u != null)
+                    {
+                        return BadRequest("El nombre de usuario ya está en uso.");
+                    }
+                    else
+                    {
+                        return Ok();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar buscar nombre de Usuario", ex);
+            }
+        }
     }
 }

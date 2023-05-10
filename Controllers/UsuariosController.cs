@@ -37,6 +37,10 @@ namespace Cemsa_BackEnd.Controllers
             //int id = usuario.UsrId;
             string user = usuario.Usuario;
             string password = usuario.Password;
+            string usu = "";
+            int idUsuario = 0;
+            int rol = 0;
+
 
             TUsuario usuarioDB = _context.TUsuarios.Where(usuarioDB => usuarioDB.Usuario == user && usuarioDB.Password == password).FirstOrDefault();
 
@@ -44,6 +48,9 @@ namespace Cemsa_BackEnd.Controllers
             {
                 return new
                 {
+                    idUsuario = 0,
+                    rol = 0,
+                    usu = "",
                     success = false,
                     message = "Credenciales incorrectas",
                     result = ""
@@ -73,6 +80,9 @@ namespace Cemsa_BackEnd.Controllers
 
             return new
             {
+                idUsuario = usuarioDB.UsrId,
+                rol = usuarioDB.Rol,
+                usu = usuarioDB.Usuario,
                 succes = true,
                 message = "exito",
                 result = new JwtSecurityTokenHandler().WriteToken(token)

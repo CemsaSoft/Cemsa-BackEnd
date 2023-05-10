@@ -25,6 +25,11 @@ namespace Cemsa_BackEnd.Models
         /// </summary>
         public string Password { get; set; } = null!;
 
+        /// <summary>
+        /// rol de usuario
+        /// </summary>
+        public int Rol { get; set; }
+
         public virtual ICollection<TCliente> TClientes { get; set; }
     }
 }
