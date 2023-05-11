@@ -8,13 +8,21 @@ using Cemsa_BackEnd.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cemsa_BackEnd.Controllers
 {
     [Route("api/central")]
     [ApiController]
+    [Authorize]
     public class CentralesController : ControllerBase
     {
+        private readonly ApplicationDbContext _context;
+
+        public CentralesController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         //GET: api/centrales/obtenerClientes
         /// <summary>
@@ -27,7 +35,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext ())
                 {
                     var query = await (from c in db.TClientes
                                        join u in db.TUsuarios on c.CliIdUsuario equals u.UsrId
@@ -63,7 +71,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     db.TCentrals.Add(central);
                     await db.SaveChangesAsync();
@@ -89,7 +97,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     foreach (var servicio in servicios)
                     {
@@ -119,7 +127,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     foreach (var servicio in servicios)
                     {
@@ -160,7 +168,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     var query = await (from tc in db.TCentrals
                                        join tec in db.TEstadoCentrals on tc.CenIdEstadoCentral equals tec.EstId
@@ -202,7 +210,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     var central = await db.TCentrals.FirstOrDefaultAsync(c => c.CenNro == cenNum);
                     if (central != null)
@@ -235,7 +243,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     return await db.TEstadoCentrals.ToListAsync();
                 }
@@ -257,7 +265,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     var query = await (from ts2 in db.TServicios
                                         join ts in db.TServiciosxcentrals on ts2.SerId equals ts.SxcNroServicio
@@ -288,7 +296,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     var query = await (from ts in db.TServiciosxcentrals                            
                                        
@@ -321,7 +329,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     var central = await db.TCentrals.FirstOrDefaultAsync(c => c.CenNro == cenNum);
                     if (central != null)

@@ -31,7 +31,7 @@ namespace Cemsa_BackEnd.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+
                 optionsBuilder.UseMySql("server=cemsa2022.cglkscvatwah.us-east-1.rds.amazonaws.com;database=Cemsa;user=administrador;password=Cemsa2022$", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.28-mysql"));
             }
         }
@@ -96,6 +96,9 @@ namespace Cemsa_BackEnd.Models
                     .HasConstraintName("cen_nroDoc_FK");
             });
 
+
+
+
             modelBuilder.Entity<TCliente>(entity =>
             {
                 entity.HasKey(e => new { e.CliTipoDoc, e.CliNroDoc })
@@ -110,9 +113,9 @@ namespace Cemsa_BackEnd.Models
 
                 entity.HasIndex(e => e.CliTipoDoc, "usr_tipoDoc_FK_idx");
 
-                entity.Property(e => e.CliTipoDoc).HasColumnName("cli_tipoDoc");
+                entity.Property(e => e.CliTipoDoc).HasColumnName("cli_tipoDoc").IsRequired();
 
-                entity.Property(e => e.CliNroDoc)
+                entity.Property(e => e.CliNroDoc).IsRequired()
                     .HasMaxLength(11)
                     .HasColumnName("cli_nroDoc");
 

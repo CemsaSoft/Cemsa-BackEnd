@@ -1,4 +1,5 @@
 ﻿using Cemsa_BackEnd.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace Cemsa_BackEnd.Controllers
 {
     [Route("api/servicios")]
     [ApiController]
+    [Authorize]
     public class ServiciosController : ControllerBase
     {
         //GET: api/servicios
@@ -19,7 +21,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     return await db.TServicios.ToListAsync();
                 }
@@ -42,7 +44,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     return await db.TServicios.FirstOrDefaultAsync(a => a.SerId == id);
                 }
@@ -65,7 +67,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     return await db.TServicios.Where(x => x.SerDescripcion.Contains(busquedaDescripcion)).ToListAsync();
                 }
@@ -87,7 +89,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     db.TServicios.Add(servicio);
                     await db.SaveChangesAsync();
@@ -113,7 +115,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     TServicio servicio = new TServicio();
                     servicio.SerDescripcion = descripcion;
@@ -141,7 +143,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     if (servicio.SerId != id)
                     {
@@ -170,7 +172,7 @@ namespace Cemsa_BackEnd.Controllers
         {
             try
             {
-                using (var db = new CemsaContext())
+                using (var db = new ApplicationDbContext())
                 {
                     var servicioEliminar = db.TServicios.Find(id);
                     if (servicioEliminar == null)

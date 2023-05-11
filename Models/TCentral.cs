@@ -11,7 +11,7 @@ namespace Cemsa_BackEnd.Models
             TFumigacions = new HashSet<TFumigacion>();
             TServiciosxcentrals = new HashSet<TServiciosxcentral>();
         }
-
+        [Key]
         /// <summary>
         /// ID Central Servicio
         /// </summary>
