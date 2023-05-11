@@ -11,6 +11,6 @@ namespace Cemsa_BackEnd.Models
         public DateTime? FumFechaRealizacion { get; set; }
         public string? FumObservacion { get; set; }
 
-        public virtual TCentral FumNroCentralNavigation { get; set; } = null!;
+        public virtual TCentral? FumNroCentralNavigation { get; set; }
     }
 }

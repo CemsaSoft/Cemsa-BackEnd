@@ -20,7 +20,7 @@ namespace Cemsa_BackEnd.Models
         public virtual DbSet<TCliente> TClientes { get; set; } = null!;
         public virtual DbSet<TEstadoCentral> TEstadoCentrals { get; set; } = null!;
         public virtual DbSet<TEstadoserviciosxCentral> TEstadoserviciosxCentrals { get; set; } = null!;
-        public virtual DbSet<TFumigacion> TFumigacions { get; set; } = null!;
+        public virtual DbSet<TFumigacion> TFumigaciones { get; set; } = null!;
         public virtual DbSet<TServicio> TServicios { get; set; } = null!;
         public virtual DbSet<TServiciosxcentral> TServiciosxcentrals { get; set; } = null!;
         public virtual DbSet<TTipoDocumento> TTipoDocumentos { get; set; } = null!;
