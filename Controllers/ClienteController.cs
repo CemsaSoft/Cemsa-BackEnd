@@ -55,6 +55,45 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
+        //GET: api/cliente/obtenerClientes
+        /// <summary>
+        /// Recupera el listado de Clientes de la Base de datos
+        /// </summary>
+        /// <returns>Lista de Clientes</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("obtenerCuenta/{idUsuario}")]
+        public async Task<ActionResult<List<TCliente>>> obtenerCuenta(int idUsuario)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var query = await (from tc in db.TClientes
+                                       join tu in db.TUsuarios on tc.CliIdUsuario equals tu.UsrId
+                                       join ttd in db.TTipoDocumentos on tc.CliTipoDoc equals ttd.TdId
+                                       where tc.CliIdUsuario == idUsuario
+                                       select new
+                                       {
+                                           tc.CliTipoDoc,
+                                           tc.CliNroDoc,
+                                           tc.CliIdUsuario,
+                                           tc.CliFechaAlta,
+                                           tc.FechaBaja,
+                                           tc.CliApeNomDen,
+                                           tc.CliEmail,
+                                           tc.CliTelefono,
+                                           tu.Usuario,
+                                           ttd.TdDescripcion
+                                       }).ToListAsync();
+                    return Ok(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar obtener Cuenta de Cliente", ex);
+            }
+        }
+
         //GET: api/Cliente/obtenerTipoDoc
         /// <summary>
         /// Recupera el listado de Tipo de Docuemntos de la Base de datos
@@ -281,6 +320,83 @@ namespace Cemsa_BackEnd.Controllers
             {
                 throw new Exception("Error al intentar buscar nombre de Usuario", ex);
             }
+        }
+
+        //POST: api/Cliente/obtenerCliente 
+        /// <summary>
+        /// Realiza una consulta en la BD y entrega el nombre del Cliente
+        /// </summary>
+        /// <returns>Entrega el nombre del Cliente</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("obtenerCliente/{idUsuario}")]
+        public async Task<ActionResult> obtenerCliente(int idUsuario)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var c = await db.TClientes.FirstOrDefaultAsync(c => c.CliIdUsuario == idUsuario);
+                    if (c != null)
+                    {
+                        return Ok(c.CliApeNomDen);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar buscar nombre del Cliente", ex);
+            }
+        }
+
+        //POST: api/Cliente/actualizarPassword 
+        /// <summary>
+        /// Realiza una consulta y verifica contraseña actual y si esta bien modifica la contraseña
+        /// </summary>
+        /// <returns>Realiza modificación de contraseña</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("actualizarPassword")]
+        public async Task<ActionResult> actualizarPassword([FromBody] ModificarPasswordRequest request)
+        {
+            try
+            {
+                int idUsuario = request.idUsuario;
+                string password = request.password;
+                string newPassword = request.newPassword;
+
+                if (string.IsNullOrWhiteSpace(newPassword))
+                {
+                    return BadRequest("La nueva contraseña es inválida");
+                }
+
+                using (var db = new ApplicationDbContext())
+                {
+                    var usuario = await db.TUsuarios.FirstOrDefaultAsync(u => u.UsrId == idUsuario && u.Password == password);
+                    if (usuario == null)
+                    {
+                        return BadRequest("La contraseña no es válida");
+                    }
+
+                    usuario.Password = newPassword;
+                    db.Entry(usuario).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar actualizar contraseña del usuario", ex);
+            }
+        }
+
+        public class ModificarPasswordRequest
+        {
+            public int idUsuario { get; set; }
+            public string password { get; set; }
+            public string newPassword { get; set; }
         }
     }
 }

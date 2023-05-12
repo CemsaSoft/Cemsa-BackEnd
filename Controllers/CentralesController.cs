@@ -198,6 +198,48 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
+        //GET: api/centrales/obtenerCentralCliente
+        /// <summary>
+        /// Recupera el listado de Centrales de un Cliente de la Base de datos
+        /// </summary>
+        /// <returns>Lista de Centrale de un Clientes</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("obtenerCentralCliente/{idUsuario}")]
+        public async Task<ActionResult<List<TCentral>>> obtenerCentralCliente(int idUsuario)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var query = await (from tc in db.TCentrals
+                                       join tec in db.TEstadoCentrals on tc.CenIdEstadoCentral equals tec.EstId
+                                       join tc2 in db.TClientes
+                                       on new { tipoDoc = tc.CenTipoDoc, nroDoc = tc.CenNroDoc } equals new { tipoDoc = tc2.CliTipoDoc, nroDoc = tc2.CliNroDoc }
+                                       join tu in db.TUsuarios
+                                       on tc2.CliIdUsuario equals tu.UsrId
+                                       where tc2.CliIdUsuario == idUsuario
+                                       select new
+                                       {
+                                           tc.CenNro,
+                                           tc.CenImei,
+                                           tc.CenCoorX,
+                                           tc.CenCoorY,
+                                           tc.CenFechaAlta,
+                                           tc.CenFechaBaja,
+                                           tc.CenIdEstadoCentral,
+                                           tc2.CliApeNomDen,
+                                           tu.Usuario,
+                                           tec.EstDescripcion,
+                                       }).ToListAsync();
+                    return Ok(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar obtener Lista de Centrales de un Cliente", ex);
+            }
+        }
+
         //POST: api/centrales 
         /// <summary>
         /// Modifica estado de una Central
@@ -275,6 +317,7 @@ namespace Cemsa_BackEnd.Controllers
                                         {
                                             ts2.SerId,
                                             ts2.SerDescripcion,
+                                            ts2.SerUnidad,
                                         }).ToListAsync();
                     return Ok(query);
                 }
