@@ -3,6 +3,7 @@
 using Cemsa_BackEnd.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Cemsa_BackEnd.Controllers
 {
@@ -10,6 +11,39 @@ namespace Cemsa_BackEnd.Controllers
     [ApiController]
     public class FumigacionesController : ControllerBase
     {
+
+        //GET: api/fumigaciones
+        /// <summary>
+        /// Recupera el listado de Fumigaciones de la Base de datos de una Central
+        /// </summary>
+        /// <returns>Lista de fumigaciones de una central</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("obtenerFumigacionesDeCentral/{cenNum}")]
+        public async Task<ActionResult<List<TFumigacion>>> obtenerFumigacionesDeCentral(int cenNum)                 
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var query = await (from f in db.TFumigacions
+                                       where f.FumNroCentral == cenNum
+                                       select new
+                                       {
+                                           f.FumId,
+                                           f.FumFechaAlta,
+                                           f.FumFechaRealizacion,
+                                           f.FumObservacion
+                                       }).ToListAsync();
+                    return Ok(query);
+                }         
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar obtener Lista de Fumigaciones de una central", ex);
+            }
+        }
+
+
         //GET: api/fumigaciones
         /// <summary>
         /// Recupera el listado de Fumigaciones de la Base de datos
