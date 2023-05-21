@@ -232,6 +232,9 @@ namespace Cemsa_BackEnd
                 entity.Property(e => e.SerUnidad)
                     .HasMaxLength(12)
                     .HasColumnName("ser_unidad");
+
+                entity.Property(e => e.SerTipoGrafico)
+                    .HasColumnName("ser_tipoGrafico");
             });
 
             modelBuilder.Entity<TServiciosxcentral>(entity =>

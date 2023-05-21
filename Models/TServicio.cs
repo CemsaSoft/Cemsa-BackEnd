@@ -32,6 +32,11 @@ namespace Cemsa_BackEnd.Models
         [StringLength(maximumLength: 20, MinimumLength = 1, ErrorMessage = "El campo {0} no debe tener mas de {1} y menos de {2} caracteres")]        
         public string SerUnidad { get; set; } = null!;
 
+        /// <summary>
+        /// Tipo de grafico del Servicio
+        /// </summary>
+        public int SerTipoGrafico { get; set; }
+        
         public virtual ICollection<TServiciosxcentral> TServiciosxcentrals { get; set; }
     }
 }

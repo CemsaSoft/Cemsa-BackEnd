@@ -302,7 +302,7 @@ namespace Cemsa_BackEnd.Controllers
         /// </summary>
         /// <returns>Lista de Servicio x Central</returns>
         /// <exception cref="Exception"></exception>
-        [HttpGet("serviciosXCentral/{cenNum}")]
+        [HttpGet("obtenerServicioXCentral/{cenNum}")]
         public async Task<ActionResult<List<TServicio>>> obtenerServicioXCentral(int cenNum)
         {
             try
@@ -319,6 +319,41 @@ namespace Cemsa_BackEnd.Controllers
                                             ts2.SerDescripcion,
                                             ts2.SerUnidad,
                                         }).ToListAsync();
+                    return Ok(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar obtener Lista de Servicio de una Central", ex);
+            }
+        }
+
+        //GET: api/centrales/obtenerServicioXCentralEstado
+        /// <summary>
+        /// Recupera el listado de Servicio que tiene una Central de la Base de datos con el estado 
+        /// </summary>
+        /// <returns>Lista de Servicio x Central con el estado</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpGet("obtenerServicioXCentralEstado/{cenNum}")]
+        public async Task<ActionResult<List<TServicio>>> obtenerServicioXCentralEstado(int cenNum)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var query = await (from ts2 in db.TServicios
+                                       join ts in db.TServiciosxcentrals on ts2.SerId equals ts.SxcNroServicio
+                                       join tc in db.TCentrals on ts.SxcNroCentral equals tc.CenNro
+                                       join ec in db.TEstadoserviciosxCentrals on ts.SxcEstado equals ec.EstId
+                                       where tc.CenNro == cenNum && ts.SxcEstado == 1
+                                       select new
+                                       {
+                                           ts2.SerId,
+                                           ts2.SerDescripcion,
+                                           ts2.SerUnidad,
+                                           ec.EstDescripcion,
+                                           ts2.SerTipoGrafico,
+                                       }).ToListAsync();
                     return Ok(query);
                 }
             }

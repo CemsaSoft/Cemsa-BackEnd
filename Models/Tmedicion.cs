@@ -5,7 +5,7 @@ namespace Cemsa_BackEnd.Models
 {
     public partial class Tmedicion
     {
-        public uint MedId { get; set; }
+        public int MedId { get; set; }
         public int MedNro { get; set; }
         public int MedSer { get; set; }
         public decimal? MedValor { get; set; }
@@ -13,6 +13,6 @@ namespace Cemsa_BackEnd.Models
         public DateTime? MedFechaHoraBd { get; set; }
         public string? MedObservacion { get; set; }
 
-        public virtual TServiciosxcentral Med { get; set; } = null!;
+        public virtual TServiciosxcentral Med { get; set; } 
     }
 }
