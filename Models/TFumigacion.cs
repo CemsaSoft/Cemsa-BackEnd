@@ -7,7 +7,7 @@ namespace Cemsa_BackEnd.Models
     {
         public int FumId { get; set; }
         public int FumNroCentral { get; set; }
-        public DateTime FumFechaAlta { get; set; }
+        public DateTime? FumFechaAlta { get; set; }
         public DateTime? FumFechaRealizacion { get; set; }
         public string? FumObservacion { get; set; }
 

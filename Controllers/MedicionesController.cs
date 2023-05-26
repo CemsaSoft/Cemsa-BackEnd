@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using static Cemsa_BackEnd.Controllers.ClienteController;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,20 +20,20 @@ namespace Cemsa_BackEnd.Controllers
         /// </summary>
         /// <returns>Lista de Mediciones de una central</returns>
         /// <exception cref="Exception"></exception>
-        [HttpGet("obtenerMediciones/{medNro}")]
-        public async Task<ActionResult<List<Tmedicion>>> obtenerMediciones(int medNro)
+        [HttpGet("obtenerMediciones")]
+        public async Task<ActionResult<List<Tmedicion>>> obtenerMediciones([FromQuery] int medNro, [FromQuery] DateTime desde, [FromQuery] DateTime hasta)
         {
             try
             {
-
                 using (var db = new ApplicationDbContext())
                 {
                     var query = await (from tm in db.Tmedicions
-                                       where tm.MedNro == medNro
+                                       where tm.MedNro == medNro && tm.MedFechaHoraSms >= desde && tm.MedFechaHoraSms <= hasta
                                        select new
                                        {
+                                           tm.MedSer,
                                            tm.MedFechaHoraSms,
-                                           tm.MedValor                                           
+                                           tm.MedValor
                                        }).ToListAsync();
                     return Ok(query);
                 }
