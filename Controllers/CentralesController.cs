@@ -318,6 +318,7 @@ namespace Cemsa_BackEnd.Controllers
                                             ts2.SerId,
                                             ts2.SerDescripcion,
                                             ts2.SerUnidad,
+                                            ts2.SerTipoGrafico,
                                         }).ToListAsync();
                     return Ok(query);
                 }

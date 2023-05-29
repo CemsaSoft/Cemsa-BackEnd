@@ -26,6 +26,9 @@ namespace Cemsa_BackEnd.Models
         public virtual DbSet<TTipoDocumento> TTipoDocumentos { get; set; } = null!;
         public virtual DbSet<TUsuario> TUsuarios { get; set; } = null!;
         public virtual DbSet<Tmedicion> Tmedicions { get; set; } = null!;
+        public virtual DbSet<TAlarmaConfig> TAlarmaConfigs { get; set; } = null!;
+        public virtual DbSet<TAlarma> TAlarmas { get; set; } = null!;
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -322,7 +325,7 @@ namespace Cemsa_BackEnd.Models
                     .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
                 entity.ToTable("tmedicion");
-
+                entity.HasAnnotation("SqlServer:ValueGenerationStrategy", "trg_tMedicion_insert");
                 entity.HasIndex(e => new { e.MedNro, e.MedSer }, "med_serviciosxCentral_FK");
 
                 entity.Property(e => e.MedId)
@@ -355,6 +358,88 @@ namespace Cemsa_BackEnd.Models
                     .HasForeignKey(d => new { d.MedNro, d.MedSer })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("med_serviciosxCentral_FK");
+            });
+
+            modelBuilder.Entity<TAlarmaConfig>(entity =>
+            {
+                entity.HasKey(e => new { e.CfgId })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("tAlarmaConfig");
+
+                entity.HasIndex(e => new { e.CfgNro, e.CfgSer }, "cfg_serviciosxCentral_FK");
+
+                entity.Property(e => e.CfgId)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("cfg_id");
+
+                entity.Property(e => e.CfgNro).HasColumnName("cfg_nro");
+
+                entity.Property(e => e.CfgSer).HasColumnName("cfg_ser");
+
+                entity.Property(e => e.CfgNombre)
+                .HasMaxLength(50)
+                .HasColumnName("cfg_nombre");
+
+                entity.Property(e => e.CfgFechaAlta)
+                    .HasColumnType("datetime")
+                    .HasColumnName("cfg_fechaAlta")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.CfgFechaBaja).HasColumnName("cfg_fechaBaja");
+
+                entity.Property(e => e.CfgValorSuperiorA)
+                    .HasPrecision(6, 2)
+                    .HasColumnName("cfg_valorSuperiorA");
+
+                entity.Property(e => e.CfgValorInferiorA)
+                    .HasPrecision(6, 2)
+                    .HasColumnName("cfg_valorInferiorA");
+
+                entity.Property(e => e.CfgObservacion)
+                    .HasMaxLength(100)
+                    .HasColumnName("cfg_observacion");
+
+                entity.HasOne(d => d.Tsc)
+                    .WithMany()
+                    .HasForeignKey(d => new { d.CfgNro, d.CfgSer })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("cfg_serviciosxCentral_FK");
+            });
+
+            modelBuilder.Entity<TAlarma>(entity =>
+            {
+                entity.HasKey(e => new { e.AlmId })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("tAlarma");
+
+                entity.HasIndex(e => new { e.AlmIdMedicion }, "med_serviciosxCentral_FK");
+
+                entity.Property(e => e.AlmId)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("alm_id");
+
+                entity.Property(e => e.AlmIdMedicion).HasColumnName("alm_idMedicion");
+
+                entity.Property(e => e.AlmMensaje)
+                    .HasMaxLength(100)
+                    .HasColumnName("alm_mensaje");
+
+                entity.Property(e => e.AlmFechaHoraBD)
+                    .HasColumnType("datetime")
+                    .HasColumnName("alm_fechaHoraBD")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.AlmVisto)
+                    .HasDefaultValue(false)
+                    .HasColumnName("alm_visto");
+
+                //entity.HasOne(d => d.Medicion)
+                //    .WithMany() sacar solo este y ver que sale
+                //    .HasForeignKey(d => new { d.AlmIdMedicion })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("alm_medicion_FK");
             });
 
             OnModelCreatingPartial(modelBuilder);
