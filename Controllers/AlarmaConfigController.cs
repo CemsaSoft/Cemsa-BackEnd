@@ -107,7 +107,7 @@ namespace Cemsa_BackEnd.Controllers
                     if (a != null)
                     {
                         a.CfgSer = alarma.CfgSer;
-                        a.CfgNombre = alarma.CfgNombre;                        
+                        a.CfgNombre = alarma.CfgNombre;
                         a.CfgValorSuperiorA = alarma.CfgValorSuperiorA;
                         a.CfgValorInferiorA = alarma.CfgValorInferiorA;
                         a.CfgObservacion = alarma.CfgObservacion;
@@ -126,5 +126,30 @@ namespace Cemsa_BackEnd.Controllers
             }
         }
 
+        //POST: api/alarmaConfig/modificarAlarmaConfig
+        /// <summary>
+        /// Realiza la actualización de una Alarma Config en la Base de Datos
+        /// </summary>
+        /// <returns>Realizar Actlizacion de una Alarma Config</returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("registrarAlarmaConfig/")]
+        public async Task<ActionResult> registrarAlarmaConfig(TAlarmaConfig alarma)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    alarma.CfgFechaAlta = DateTime.Now;
+                    alarma.CfgFechaBaja = null;
+                    db.TAlarmaConfigs.Add(alarma);
+                    await db.SaveChangesAsync();
+                    return Ok(alarma);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar registrar una Alarma Config", ex);
+            }
+        }
     }
 }
