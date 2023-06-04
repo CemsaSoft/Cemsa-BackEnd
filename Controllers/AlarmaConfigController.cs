@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Cemsa_BackEnd.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/alarmaConfig")]
     [ApiController]
     [Authorize]
     public class AlarmaConfigController : ControllerBase

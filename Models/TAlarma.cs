@@ -7,7 +7,7 @@ namespace Cemsa_BackEnd.Models
         public TAlarma()
         {
         }
-        [Key]
+        //[Key]
         /// <summary>
         /// ID de Alarma
         /// </summary>
@@ -38,6 +38,6 @@ namespace Cemsa_BackEnd.Models
         /// </summary>
         public bool AlmVisto { get; set; }
 
-        public virtual Tmedicion? Medicion { get; set; } //= null!;
+        //public virtual Tmedicion? Medicion { get; set; } //= null!;
     }
 }

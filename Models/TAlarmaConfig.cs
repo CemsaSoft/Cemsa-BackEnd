@@ -6,9 +6,9 @@ namespace Cemsa_BackEnd.Models
     {
         public TAlarmaConfig()
         {
-            TAlarmas = new HashSet<TAlarma>();
+            //TAlarmas = new HashSet<TAlarma>();
         }
-        [Key]
+        //[Key]
         /// <summary>
         /// ID Config de Alarma
         /// </summary>
@@ -61,6 +61,6 @@ namespace Cemsa_BackEnd.Models
         public string? CfgObservacion { get; set; } = null!;
 
         public virtual TServiciosxcentral? Tsc { get; set; } //= null!;
-        public virtual ICollection<TAlarma>? TAlarmas { get; set; }
+        //public virtual ICollection<TAlarma>? TAlarmas { get; set; }
     }
 }
