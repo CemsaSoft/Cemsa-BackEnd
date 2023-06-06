@@ -346,7 +346,7 @@ namespace Cemsa_BackEnd.Controllers
                                        join ts in db.TServiciosxcentrals on ts2.SerId equals ts.SxcNroServicio
                                        join tc in db.TCentrals on ts.SxcNroCentral equals tc.CenNro
                                        join ec in db.TEstadoserviciosxCentrals on ts.SxcEstado equals ec.EstId
-                                       where tc.CenNro == cenNum && ts.SxcEstado == 1
+                                       where tc.CenNro == cenNum 
                                        select new
                                        {
                                            ts2.SerId,

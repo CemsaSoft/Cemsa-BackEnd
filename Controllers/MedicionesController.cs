@@ -28,12 +28,15 @@ namespace Cemsa_BackEnd.Controllers
                 using (var db = new ApplicationDbContext())
                 {
                     var query = await (from tm in db.Tmedicions
+                                       join s in db.TServicios on tm.MedSer equals s.SerId
                                        where tm.MedNro == medNro && tm.MedFechaHoraSms >= desde && tm.MedFechaHoraSms <= hasta
                                        select new
                                        {
+                                           tm.MedId,
                                            tm.MedSer,
                                            tm.MedFechaHoraSms,
-                                           tm.MedValor
+                                           tm.MedValor,
+                                           s.SerDescripcion
                                        }).ToListAsync();
                     return Ok(query);
                 }

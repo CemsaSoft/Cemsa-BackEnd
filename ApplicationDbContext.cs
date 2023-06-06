@@ -229,7 +229,7 @@ namespace Cemsa_BackEnd
                 entity.Property(e => e.SerId).HasColumnName("ser_id");
 
                 entity.Property(e => e.SerDescripcion)
-                    .HasMaxLength(20)
+                    .HasMaxLength(30)
                     .HasColumnName("ser_descripcion");
 
                 entity.Property(e => e.SerUnidad)

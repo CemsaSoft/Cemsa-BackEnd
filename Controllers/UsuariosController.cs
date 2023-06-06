@@ -1,5 +1,6 @@
 ﻿using Cemsa_BackEnd.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -41,8 +42,12 @@ namespace Cemsa_BackEnd.Controllers
             int idUsuario = 0;
             int rol = 0;
 
+            //TUsuario usuarioDB = _context.TUsuarios.Where(usuarioDB => usuarioDB.Usuario == user && usuarioDB.Password == password).FirstOrDefault();
 
-            TUsuario usuarioDB = _context.TUsuarios.Where(usuarioDB => usuarioDB.Usuario == user && usuarioDB.Password == password).FirstOrDefault();
+            TUsuario usuarioDB = _context.TUsuarios
+                .Include(u => u.TClientes)
+                .Where(usuarioDB => usuarioDB.Usuario == user && usuarioDB.Password == password)
+                .FirstOrDefault();
 
             if (usuarioDB == null)
             {
@@ -51,6 +56,7 @@ namespace Cemsa_BackEnd.Controllers
                     idUsuario = 0,
                     rol = 0,
                     usu = "",
+                    cliente = "",
                     success = false,
                     message = "Credenciales incorrectas",
                     result = ""
@@ -78,11 +84,14 @@ namespace Cemsa_BackEnd.Controllers
                 signingCredentials: singIn
             );
 
+            string cliApeNomDen = usuarioDB.TClientes?.FirstOrDefault()?.CliApeNomDen;
+
             return new
             {
                 idUsuario = usuarioDB.UsrId,
                 rol = usuarioDB.Rol,
                 usu = usuarioDB.Usuario,
+                cliente = cliApeNomDen,
                 succes = true,
                 message = "exito",
                 result = new JwtSecurityTokenHandler().WriteToken(token)
