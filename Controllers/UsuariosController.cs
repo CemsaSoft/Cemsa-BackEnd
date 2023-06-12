@@ -109,8 +109,8 @@ namespace Cemsa_BackEnd.Controllers
         private readonly string _smtpPassword = "TDLXCzdOAjrtfIcW";
 
         [HttpGet]
-        [Route("recuperarMail/{usuario}/{mail}")]
-        public async Task<ActionResult> recuperarMail(string usuario, string mail)
+        [Route("recuperarPassword/{usuario}/{mail}")]
+        public async Task<ActionResult> recuperarPassword(string usuario, string mail)
         {
             using (var db = new ApplicationDbContext())
             { 
