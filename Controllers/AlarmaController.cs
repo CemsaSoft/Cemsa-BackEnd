@@ -50,6 +50,7 @@ namespace Cemsa_BackEnd.Controllers
                                            med.MedValor,
                                            a.AlmFechaHoraBD,
                                            a.AlmVisto,
+                                           a.AlmNotificado,
                                        }).ToListAsync();
 
                         var query2 = await (from a in db.TAlarmas
@@ -107,6 +108,7 @@ namespace Cemsa_BackEnd.Controllers
                                            med.MedValor,
                                            a.AlmFechaHoraBD,
                                            a.AlmVisto,
+                                           a.AlmNotificado,
                                        }).ToListAsync();
                     return Ok(query);
                 }

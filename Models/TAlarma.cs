@@ -37,6 +37,10 @@ namespace Cemsa_BackEnd.Models
         /// Visto
         /// </summary>
         public bool AlmVisto { get; set; }
+        /// <summary>
+        /// Notificadoo
+        /// </summary>
+        public bool AlmNotificado { get; set; }
 
         //public virtual Tmedicion? Medicion { get; set; } //= null!;
     }

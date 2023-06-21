@@ -434,6 +434,10 @@ namespace Cemsa_BackEnd
                 entity.Property(e => e.AlmVisto)
                     .HasDefaultValue(false)
                     .HasColumnName("alm_visto");
+    
+                entity.Property(e => e.AlmNotificado)
+                .HasDefaultValue(false)
+                .HasColumnName("alm_notificado");
 
                 //entity.HasOne(d => d.Medicion)
                 //    .WithMany()

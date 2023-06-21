@@ -435,6 +435,10 @@ namespace Cemsa_BackEnd.Models
                     .HasDefaultValue(false)
                     .HasColumnName("alm_visto");
 
+                entity.Property(e => e.AlmNotificado)
+                    .HasDefaultValue(false)
+                    .HasColumnName("alm_notificado");
+
                 //entity.HasOne(d => d.Medicion)
                 //    .WithMany() sacar solo este y ver que sale
                 //    .HasForeignKey(d => new { d.AlmIdMedicion })
