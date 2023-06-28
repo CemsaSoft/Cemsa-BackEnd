@@ -99,46 +99,46 @@ namespace Cemsa_BackEnd.Controllers
         ///// </summary>
         ///// <returns>Realizar Registro de varias mediciones</returns>
         ///// <exception cref="Exception"></exception>
-        //[HttpPost("registarMediciones")]
-        //public async Task<ActionResult> registarMediciones()
-        //{
-        //    try
-        //    {
-        //        using (var db = new ApplicationDbContext())
-        //        {
-        //            DateTime fechaSMS = new DateTime(2023, 5, 2, 0, 0, 0); // Fecha inicial para MedFechaHoraSms
-        //            DateTime fechaBD = new DateTime(2023, 5, 2, 0, 0, 0); // Fecha inicial para MedFechaHoraBd
+        [HttpPost("registarMediciones")]
+        public async Task<ActionResult> registarMedicionesTest()
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    DateTime fechaSMS = new DateTime(2023, 6, 22, 0, 0, 0); // Fecha inicial para MedFechaHoraSms
+                    DateTime fechaBD = new DateTime(2023, 6, 22, 0, 0, 0); // Fecha inicial para MedFechaHoraBd
 
-        //            Random rnd = new Random();
+                    //Random rnd = new Random();
 
-        //            for (int i = 0; i < 100; i++)
-        //            {
-        //                int valor = rnd.Next(40, 101); // Genera un número aleatorio entre 40 y 100
+                    //for (int i = 0; i < 100; i++)
+                    //{
+                        //int valor = rnd.Next(40, 101); // Genera un número aleatorio entre 40 y 100
 
-        //                Tmedicion newMed = new Tmedicion
-        //                {
-        //                    MedNro = 1,
-        //                    MedSer = 1,
-        //                    MedValor = valor,
-        //                    MedFechaHoraSms = fechaSMS,
-        //                    //MedFechaHoraBd = fechaBD
-        //                };
+                        Tmedicion newMed = new Tmedicion
+                        {
+                            MedNro = 1,
+                            MedSer = 4,
+                            MedValor = 1000,
+                            MedFechaHoraSms = fechaSMS,
+                            MedFechaHoraBd = fechaBD
+                        };
 
-        //                db.Tmedicions.Add(newMed);
-        //                await db.SaveChangesAsync();
+                        db.Tmedicions.Add(newMed);
+                        await db.SaveChangesAsync();
 
-        //                fechaSMS = fechaSMS.AddMinutes(60); // Añade 5 minutos a la fecha de MedFechaHoraSms
-        //                fechaBD = fechaBD.AddMinutes(60); // Añade 5 minutos a la fecha de MedFechaHoraBd
-        //            }
+                        //fechaSMS = fechaSMS.AddMinutes(60); // Añade 5 minutos a la fecha de MedFechaHoraSms
+                        //fechaBD = fechaBD.AddMinutes(60); // Añade 5 minutos a la fecha de MedFechaHoraBd
+                    //}
 
-        //            return Ok();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error al intentar Registrar las mediciones", ex);
-        //    }
-        //}
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar Registrar las mediciones", ex);
+            }
+        }
 
     }
 }

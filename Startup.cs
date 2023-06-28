@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Quartz.Spi;
+using Scoring.API.Jobs;
+using Scoring.API.Jobs.Config;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -21,6 +24,15 @@ namespace Cemsa_BackEnd
 
         public void ConfigureService(IServiceCollection services)
         {
+            services.AddSingleton<IJobFactory, SingletonJobFactory>();
+
+            services.AddSingleton<AlarmaJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(AlarmaJob),
+               cronExpression: Configuration.GetSection("CronExpressions").GetSection("alarmas").Value));
+
+            services.AddHostedService<QuartzHostedService>();
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
@@ -106,6 +118,10 @@ namespace Cemsa_BackEnd
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/alarmaJob", async context =>
+                {
+                    await context.Response.WriteAsync("Job Start!");
+                });
                 endpoints.MapControllers();
             });
         }
