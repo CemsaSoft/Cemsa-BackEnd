@@ -113,22 +113,31 @@ namespace Cemsa_BackEnd.Controllers
 
                     //for (int i = 0; i < 100; i++)
                     //{
-                        //int valor = rnd.Next(40, 101); // Genera un número aleatorio entre 40 y 100
+                    //int valor = rnd.Next(40, 101); // Genera un número aleatorio entre 40 y 100
+                    Tmedicion newMed1 = new Tmedicion
+                    {
+                        MedNro = 51,
+                        MedSer = 1,
+                        MedValor = -30,
+                        MedFechaHoraSms = fechaSMS,
+                        MedFechaHoraBd = fechaBD
+                    };
 
-                        Tmedicion newMed = new Tmedicion
-                        {
-                            MedNro = 1,
-                            MedSer = 4,
-                            MedValor = 1000,
-                            MedFechaHoraSms = fechaSMS,
-                            MedFechaHoraBd = fechaBD
-                        };
+                    Tmedicion newMed2 = new Tmedicion
+                    {
+                        MedNro = 51,
+                        MedSer = 1,
+                        MedValor = 90,
+                        MedFechaHoraSms = fechaSMS,
+                        MedFechaHoraBd = fechaBD
+                    };
 
-                        db.Tmedicions.Add(newMed);
-                        await db.SaveChangesAsync();
+                    db.Tmedicions.Add(newMed1);
+                    db.Tmedicions.Add(newMed2);
+                    await db.SaveChangesAsync();
 
-                        //fechaSMS = fechaSMS.AddMinutes(60); // Añade 5 minutos a la fecha de MedFechaHoraSms
-                        //fechaBD = fechaBD.AddMinutes(60); // Añade 5 minutos a la fecha de MedFechaHoraBd
+                    //fechaSMS = fechaSMS.AddMinutes(60); // Añade 5 minutos a la fecha de MedFechaHoraSms
+                    //fechaBD = fechaBD.AddMinutes(60); // Añade 5 minutos a la fecha de MedFechaHoraBd
                     //}
 
                     return Ok();

@@ -1,43 +1,28 @@
 ﻿using Cemsa_BackEnd.Models.DTOs;
 using Cemsa_BackEnd.Models;
 using Cemsa_BackEnd;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
 using Newtonsoft.Json;
 using Quartz;
 using System.Net;
 using static System.Reflection.Metadata.BlobBuilder;
 using Microsoft.EntityFrameworkCore;
+using Cemsa_BackEnd.Helpers.Mail;
 
 namespace Scoring.API.Jobs
 {
     [DisallowConcurrentExecution]
     public class AlarmaJob : IJob
     {
-        private readonly string _smtpServer = "smtp-relay.sendinblue.com";
-        private readonly int _smtpPort = 587;
-        private readonly string _smtpUsername = "5k4cemsa2021@gmail.com";
-        private readonly string _smtpPassword = "TDLXCzdOAjrtfIcW";
-
+        private readonly HelperMail _helperMail;
 
         private HttpWebRequest _httpWebRequest;
-        //private readonly AppOptions _appOptions = new AppOptions();
 
-
-
-
-        //Logs _logs;
-
-
-        public AlarmaJob(IConfiguration configuration)
+        public AlarmaJob(IConfiguration configuration, HelperMail helperMail)
         {
 
-
             Configuration = configuration;
+            _helperMail = helperMail;
             //Configuration.GetSection(AppOptions.SectionName).Bind(_appOptions);
-
-
 
         }
         public IConfiguration Configuration { get; }
@@ -89,22 +74,9 @@ namespace Scoring.API.Jobs
                     {
                         if (noti.CliEmail != null)
                         {
-                            var message = new MimeMessage();
-                            message.From.Add(new MailboxAddress("Cemsa", _smtpUsername));
-                            message.To.Add(new MailboxAddress(noti.CliApeNomDen, noti.CliEmail));
-                            message.Subject = "Alerta de medición con valor: " + noti.NotiMedValor;
-                            message.Body = new TextPart("plain")
+                            if(!await _helperMail.enviarAlarmaMail(noti))
                             {
-                                Text = "Estimado Cliente: " + noti.CliApeNomDen + ",\n\nSe notifica sobre la siguiente alarma en la central " + noti.NotiAlmCentral +
-                                " en el servicio " + noti.NotiAlmServicio + " con fecha " + noti.AlmFechaHoraBD + ".\n\n" + noti.NotiAlmMensaje +
-                                "\r\n\nDesde el equipo de Cemsa, le enviamos nuestros saludos.\r\n"
-                            };
-                            using (var client = new SmtpClient())
-                            {
-                                await client.ConnectAsync(_smtpServer, _smtpPort, SecureSocketOptions.StartTls);
-                                await client.AuthenticateAsync(_smtpUsername, _smtpPassword);
-                                await client.SendAsync(message);
-                                await client.DisconnectAsync(true);
+                                return false;
                             }
                              TAlarma alarma = alarmas.Find(match: x => x.AlmId == noti.NotiAlmId);
                             if (alarma != null)

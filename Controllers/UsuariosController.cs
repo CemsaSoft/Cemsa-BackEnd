@@ -5,10 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+using Cemsa_BackEnd.Helpers.Mail;
 using System;
 
 namespace Cemsa_BackEnd.Controllers
@@ -22,12 +19,13 @@ namespace Cemsa_BackEnd.Controllers
         private readonly IConfiguration _configuration;
         //var context = new ApplicationDbContext();
         //var repository = new ClienteRepository(context);
-        public UsuariosController(ApplicationDbContext context, Microsoft.Extensions.Configuration.IConfiguration configuration)
+        private readonly HelperMail _helperMail;
+        public UsuariosController(ApplicationDbContext context, Microsoft.Extensions.Configuration.IConfiguration configuration, HelperMail helperMail)
         {
             //_context = new ApplicationDbContext();
             _context = context;
             _configuration = configuration;
-
+            _helperMail = helperMail;
         }
 
         // POST: api/usuario/login
@@ -103,11 +101,6 @@ namespace Cemsa_BackEnd.Controllers
             };
         }
 
-        private readonly string _smtpServer = "smtp-relay.sendinblue.com";
-        private readonly int _smtpPort = 587;
-        private readonly string _smtpUsername = "5k4cemsa2021@gmail.com";
-        private readonly string _smtpPassword = "TDLXCzdOAjrtfIcW";
-
         [HttpGet]
         [Route("recuperarPassword/{usuario}/{mail}")]
         public async Task<ActionResult> recuperarPassword(string usuario, string mail)
@@ -128,21 +121,9 @@ namespace Cemsa_BackEnd.Controllers
                     {
                         usr.Password = "123456";
                         await db.SaveChangesAsync();
-                        //return Ok();
-                        var message = new MimeMessage();
-                        message.From.Add(new MailboxAddress("Cemsa", _smtpUsername));
-                        message.To.Add(new MailboxAddress(usuario, mail));
-                        message.Subject = "Recuperar Contraseña";
-                        message.Body = new TextPart("plain")
+                        if (!await _helperMail.enviarResetPasswordMail(usuario, mail))
                         {
-                            Text = "Estimado Cliente: " + usuario + ",\n\nSe ha restablecido su contraseña.\n\nLa nueva contraseña es: 123456. Al ingresar, se le solicitará que la cambie.\r\n\nDesde el equipo de Cemsa, le enviamos nuestros saludos.\r\n"
-                        };
-                        using (var client = new SmtpClient())
-                        {
-                            await client.ConnectAsync(_smtpServer, _smtpPort, SecureSocketOptions.StartTls);
-                            await client.AuthenticateAsync(_smtpUsername, _smtpPassword);
-                            await client.SendAsync(message);
-                            await client.DisconnectAsync(true);
+                            return StatusCode(500, "Failed to send email");
                         }
                         return Ok("Se envio Email y se blanqueo la Contraseña");
                     }

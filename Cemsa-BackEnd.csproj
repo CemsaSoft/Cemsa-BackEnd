@@ -24,6 +24,7 @@
   </ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Helpers\Mail\" />
 		<Folder Include="Models\" />
 	</ItemGroup>
 

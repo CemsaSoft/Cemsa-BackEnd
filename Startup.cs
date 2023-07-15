@@ -11,6 +11,8 @@ using Scoring.API.Jobs.Config;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using Cemsa_BackEnd.Helpers.Mail;
+
 namespace Cemsa_BackEnd
 {
     public class Startup
@@ -26,6 +28,7 @@ namespace Cemsa_BackEnd
         {
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
 
+            services.AddSingleton<HelperMail>();
             services.AddSingleton<AlarmaJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(AlarmaJob),
