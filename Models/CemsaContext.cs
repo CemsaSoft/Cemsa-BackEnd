@@ -35,7 +35,7 @@ namespace Cemsa_BackEnd.Models
             if (!optionsBuilder.IsConfigured)
             {
 
-                optionsBuilder.UseMySql("server=cemsa2022.cglkscvatwah.us-east-1.rds.amazonaws.com;database=Cemsa;user=administrador;password=Cemsa2022$", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.28-mysql"));
+                optionsBuilder.UseMySql("server=cemsa2022.cqzxzqhapcfd.us-east-1.rds.amazonaws.com;database=Cemsa;user=administrador;password=Cemsa2022$", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.28-mysql"));
             }
         }
 
