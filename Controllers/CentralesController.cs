@@ -430,5 +430,49 @@ namespace Cemsa_BackEnd.Controllers
                 throw new Exception("Error al intentar actualizar datos de una Central", ex);
             }
         }
+
+        // POST: api/central/verificarImei
+        /// <summary>
+        /// Verificar si un IMEI existe en la base de datos con central en Alta
+        /// </summary>
+        /// <param name="imeiModel"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("verificarImei/{cenImei}/{cenNum}")]
+        public async Task<ActionResult> VerificarImei(string cenImei, int cenNum)
+        {
+            try
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var query = db.TCentrals.Where(c => c.CenImei == cenImei && c.CenIdEstadoCentral == 1);
+
+                    if (cenNum != 0)
+                    {
+                        // Si cenNum no es igual a 0, excluye ese número de central de la búsqueda
+                        query = query.Where(c => c.CenNro != cenNum);
+                    }
+
+                    var imeiExistente = await query.FirstOrDefaultAsync();
+
+                    if (imeiExistente != null)
+                    {
+                        // El IMEI ya está en uso, puedes devolver un mensaje de error.
+                        return BadRequest("El IMEI ya está en uso.");
+                    }
+                    else
+                    {
+                        // El IMEI no existe en la base de datos, puedes devolver un mensaje de éxito.
+                        return Ok();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al intentar verificar el IMEI", ex);
+            }
+        }
+
+
     }
 }
