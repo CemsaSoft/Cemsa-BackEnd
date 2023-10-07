@@ -60,23 +60,43 @@ namespace Cemsa_BackEnd.Controllers
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    var query = await (from ts in db.TServiciosxcentrals
-                                       join ts2 in db.TServicios on ts.SxcNroServicio equals ts2.SerId
-                                       join tm in db.Tmedicions on new { NroCentral = ts.SxcNroCentral, NroServicio = ts.SxcNroServicio } equals new { NroCentral = tm.MedNro, NroServicio = tm.MedSer }
-                                       where ts.SxcNroCentral == medNro
-                                           && ts.SxcEstado != 2
-                                           && tm.MedFechaHoraSms == db.Tmedicions
-                                               .Where(m => m.MedNro == ts.SxcNroCentral && m.MedSer == ts.SxcNroServicio)
-                                               .Max(m => m.MedFechaHoraSms)
-                                       select new
-                                       {
-                                           tm.MedValor,
-                                           tm.MedFechaHoraSms,
-                                           ts2.SerTipoGrafico
-                                       }).ToListAsync();
+					//var query = await (from ts in db.TServiciosxcentrals
+					//                   join ts2 in db.TServicios on ts.SxcNroServicio equals ts2.SerId
+					//                   join tm in db.Tmedicions on new { NroCentral = ts.SxcNroCentral, NroServicio = ts.SxcNroServicio } equals new { NroCentral = tm.MedNro, NroServicio = tm.MedSer }
+					//                   where ts.SxcNroCentral == medNro
+					//                       && ts.SxcEstado != 2
+					//                       && tm.MedFechaHoraSms == db.Tmedicions
+					//                           .Where(m => m.MedNro == ts.SxcNroCentral && m.MedSer == ts.SxcNroServicio)
+					//                           .Max(m => m.MedFechaHoraSms)
+					//                   select new
+					//                   {
+					//                       tm.MedValor,
+					//                       tm.MedFechaHoraSms,
+					//                       ts2.SerTipoGrafico
+					//                   }).ToListAsync();
+
+					var maxFechaHoraSms = await db.Tmedicions
+	                .Where(m => m.MedNro == medNro && db.TServiciosxcentrals
+		                .Where(ts => ts.SxcNroCentral == medNro && ts.SxcEstado != 2)
+		                .Select(ts => ts.SxcNroServicio)
+		                .Contains(m.MedSer))
+	                .MaxAsync(m => m.MedFechaHoraSms);
+
+					var query = await (from ts in db.TServiciosxcentrals
+									   join ts2 in db.TServicios on ts.SxcNroServicio equals ts2.SerId
+									   join tm in db.Tmedicions on new { NroCentral = ts.SxcNroCentral, NroServicio = ts.SxcNroServicio } equals new { NroCentral = tm.MedNro, NroServicio = tm.MedSer }
+									   where ts.SxcNroCentral == medNro
+										   && ts.SxcEstado != 2
+										   && tm.MedFechaHoraSms == maxFechaHoraSms
+									   select new
+									   {
+										   tm.MedValor,
+										   tm.MedFechaHoraSms,
+										   ts2.SerTipoGrafico
+									   }).ToListAsync();
 
 
-                    return Ok(query);
+					return Ok(query);
                 }
             }
             catch (Exception ex)
