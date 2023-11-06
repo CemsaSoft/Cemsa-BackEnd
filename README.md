@@ -1,8 +1,5 @@
 # Cemsa-BackEnd
-Desarrollo Back End de aplicativo de central meteorológica CeMSA, en tecnología .NET
+Desarrollo Front End de la aplicación CEO Manage Pro, en tecnología Angular
 
 # Colaborators
 Claudio E. Oliveda
-Karen Y. Cruz
-Pablo F. Jornet
-Pablo G. Gómez
